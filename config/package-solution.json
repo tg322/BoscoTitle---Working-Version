@@ -1,0 +1,40 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "bosco-title-client-side-solution",
+    "id": "1f077a36-a8c5-49af-a20a-6d88eb2394dd",
+    "version": "1.0.0.0",
+    "includeClientSideAssets": true,
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "developer": {
+      "name": "",
+      "websiteUrl": "",
+      "privacyUrl": "",
+      "termsOfUseUrl": "",
+      "mpnId": "Undefined-1.17.2"
+    },
+    "metadata": {
+      "shortDescription": {
+        "default": "bosco-title description"
+      },
+      "longDescription": {
+        "default": "bosco-title description"
+      },
+      "screenshotPaths": [],
+      "videoUrl": "",
+      "categories": []
+    },
+    "features": [
+      {
+        "title": "bosco-title Feature",
+        "description": "The feature that activates elements of the bosco-title solution.",
+        "id": "0fb85252-9bd8-42d7-a029-370e33447d1c",
+        "version": "1.0.0.0"
+      }
+    ]
+  },
+  "paths": {
+    "zippedPackage": "solution/bosco-title.sppkg"
+  }
+}

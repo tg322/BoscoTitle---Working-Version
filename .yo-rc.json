@@ -1,0 +1,21 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "plusBeta": false,
+    "isCreatingSolution": true,
+    "nodeVersion": "16.18.0",
+    "sdksVersions": {
+      "@microsoft/microsoft-graph-client": "3.0.2",
+      "@microsoft/teams-js": "2.9.1"
+    },
+    "version": "1.17.2",
+    "libraryName": "bosco-title",
+    "libraryId": "1f077a36-a8c5-49af-a20a-6d88eb2394dd",
+    "environment": "spo",
+    "packageManager": "npm",
+    "solutionName": "bosco-title",
+    "solutionShortDescription": "bosco-title description",
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "componentType": "webpart"
+  }
+}
