@@ -1,5 +1,5 @@
 import * as React from 'react';
-import styles from '../BoscoTitle.module.scss';
+import styles from './BgUpload.module.scss';
 // import { ITestProps } from './ITestProps';
 
 function Modal(props: any){

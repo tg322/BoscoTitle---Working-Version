@@ -4,11 +4,16 @@ import {
   IBgUploadPropertyPanePropsHostState
 } from "./IBgUploadPropertyPanePropsHost";
 import { Icon, Spinner } from "office-ui-fabric-react";
-import styles from '../BoscoTitle.module.scss';
-import {DataHandler} from '../DataHandler';
-import Modal from '../modal/Modal';
+import styles from './BgUpload.module.scss';
+import Modal from './Modal';
+import { spfi, SPFx as spSPFx } from "@pnp/sp";
+// import { graphfi, SPFx as graphSPFx} from "@pnp/graph";
 
-
+import "@pnp/sp/files";
+import "@pnp/sp/folders";
+import "@pnp/sp/webs";
+import "@pnp/sp/lists";
+import { IFileAddResult } from "@pnp/sp/files";
 
 
 
@@ -16,6 +21,9 @@ export default class PropertyFieldBgUploadHost extends React.Component<
   IBgUploadPropertyPanePropsHost,
   IBgUploadPropertyPanePropsHostState
 > {
+
+  private sp: any;
+
   constructor(props: IBgUploadPropertyPanePropsHost) {
     super(props);
 
@@ -29,8 +37,14 @@ export default class PropertyFieldBgUploadHost extends React.Component<
       isVisible: value != null,
       isUploading: false,
       modalVisible: false
+      
     };
+
+    this.sp = spfi().using(spSPFx(this.props.context));
+  
+
   }
+  
 
   // class set to async to allow use of await function to hold code while functions run. Prevents bugs with uploading and removing images not being completed when setting states and showing previews.
   private handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
@@ -42,7 +56,15 @@ export default class PropertyFieldBgUploadHost extends React.Component<
       //If value already contains an image *uploading an image then clicking upload again instead of clicking remove then uploading* run handleFileRemove (remove file from sharepoint)
       if(this.state.value != null){
         //wait for this function to finish before continuing with the code, sending file name allows this function to locate the old file to then remove it
-        await this.handleFileRemove(this.state.value.fileName);
+        // await this.handleFileRemove(this.state.value.fileName);
+
+        // let graph = graphfi().using(graphSPFx(this.context));
+
+        // let sp = spfi().using(spSPFx(this.context));
+
+        await this.sp.web.getFolderByServerRelativePath(this.props.libraryName).files.getByUrl(this.state.value.fileName).delete();
+
+
       }
       //Run upload file function, wait for this function to finish
       await this.handleFileUpload(file);
@@ -52,40 +74,35 @@ export default class PropertyFieldBgUploadHost extends React.Component<
     }
   };
 
-//Function to run when uploading an image
 handleFileUpload = async (file: File) => {
-    //Show the uploading to sharepoint spinner and hide the preview and upload/remove buttons
-    this.setState({ isUploading: true, isVisible: false });
-    //Create a new instance of the DataHandler class from DataHandler.ts, this file contains the upload, remove logic
-    let dataHandler = new DataHandler();
-    //Using the original filename e.g 'BoscoHeroBackgroundImage.png' grab only the '.png' extention
-    const fileType = file.name.slice(file.name.indexOf('.'));
-    //begin the async upload function
-    try {
-      //Apply the call to dataHandler uploadFileToSP function to a variable in order to fetch the files details once its uploaded to the document library
-      const fileData = await dataHandler.uploadFileToSP(file, this.props.context, this.props.libraryName, this.props.overwrite && this.props.overwrite ? this.props.overwrite : true, this.props.fileName && this.props.fileName ? this.props.fileName+fileType : file.name);
-      //Create an object, we do this because creating a large object for props is complex and can become convuluted easily, so having one 'value' prop and storing an object within it is a simpler approach
-      let fileObject: { [keys: string]: any; } = {};
-      //Store the fileName from the returned fileData in the fileName key
-      fileObject.fileName = fileData.Name;
-      //Store the blob from the returned fileData in the blob key. The code this.props.context.pageContext.web.absoluteUrl grabs the main url of the sharepoint site e.g https://stpaulscc.sharepoint.com, we then get the relative URL from the returned fileData
-      //which will contain spaces and other characters that can cause errors so we encode this url to replace these special characters such as spaces from ' ' to '%20' which creates a valid url. We also add a timestamp to the end of the URL to
-      //solve the caching issues of uploading an image which has been renamed to that of the property fileName, which in our case is 'image1' .png, and can display the previous image stored in the cache since if another .png file is uploaded and renamed
-      //to 'image1' the client side will simply pull the cached image, adding the timestamp denotes this as a unique url meaning it will pull the new image each time
-      fileObject.blob = this.props.context.pageContext.web.absoluteUrl + encodeURI(fileData.ServerRelativeUrl) + `?UUID=${new Date().getTime() + Math.floor(Math.random() * 1000000000)}`;
-      fileObject.label = this.props.label;
-      //We set the state of value to the fileObject key value pair object
-      this.setState({value: fileObject});
-      //Let sharepoint framework know the prop value is now the state value to be used in the main webpart
-      this.props.onChanged(this.state.value);
 
-    } catch (error) {
-      console.error('Error uploading file:', error);
-    }
-    //Revert the states back to their defaults, hide the uploading to sharepoint spinner and show the preview and upload/remove buttons
-    this.setState({ isUploading: false, isVisible: true });
-    //Set the onChanged property again, dont want to remove this because its working and not sure if removing will reveal a bug :(
-    // this.props.onChanged(this.state.value);
+  this.setState({ isUploading: true, isVisible: false });
+
+  let result: IFileAddResult;
+  const fileType = file.name.slice(file.name.indexOf('.'));
+  try{
+    result = await this.sp.web.getFolderByServerRelativePath(this.props.libraryName).files.addUsingPath(this.props.fileName+fileType, file, { Overwrite: true });
+
+    let fileObject: { [keys: string]: any; } = {};
+
+    fileObject.fileName = this.props.fileName+fileType;
+  
+    fileObject.blob = this.props.context.pageContext.web.absoluteUrl + encodeURI(result.data.ServerRelativeUrl) + `?UUID=${new Date().getTime() + Math.floor(Math.random() * 1000000000)}`;
+  
+    fileObject.label = this.props.label;
+
+    this.setState({value: fileObject});
+
+    this.props.onChanged(this.state.value);
+  }
+  catch (error){
+    console.error('Error uploading file:', error);
+  }
+  
+  this.setState({ isUploading: false, isVisible: true });
+
+  this.props.onChanged(this.state.value);
+  
 }
 
 handleModalToggle = () => {
@@ -111,11 +128,11 @@ handleClick = async () => {
 //The async handleFileRemove function that removes the file from sharepoint
 handleFileRemove = async (fileName:any) => {
     //Create an instance of DataHandler to access the data handling functions
-    let dataHandler = new DataHandler();
+    
     //Begin the async remove function
     try {
       //Run await the deleteFileFromSP function
-      await dataHandler.deleteFileFromSP(this.props.context, this.props.libraryName, fileName);
+      await this.sp.web.getFolderByServerRelativePath(this.props.libraryName).files.getByUrl(fileName).delete();
     } catch (error) {
       console.error('Error deleting file:', error);
     }

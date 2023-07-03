@@ -153,9 +153,9 @@ async createFolderInSP(context: any, folderLocation: string, folderName:string):
           });
           
           if (matchingFiles.length > 0) {
-            console.log('File exists!');
+            resolve(true + ' ' + fileName + matchingFiles.Name);
           } else {
-            console.log('File not found.');
+            resolve(false + ' ' + fileName)
           }
           
         });

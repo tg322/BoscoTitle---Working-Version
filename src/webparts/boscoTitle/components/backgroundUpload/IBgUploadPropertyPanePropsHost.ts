@@ -15,4 +15,5 @@ export interface IBgUploadPropertyPanePropsHost {
     isVisible: boolean;
     isUploading: boolean;
     modalVisible: boolean;
+    context?:any;
   }
