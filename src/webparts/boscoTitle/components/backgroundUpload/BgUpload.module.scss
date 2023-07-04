@@ -1,28 +1,5 @@
 @import '~@fluentui/react/dist/sass/References.scss';
 
-.test {
- display: flex;
- flex-direction: column;
- div{
-  height:40vh;
- }
-}
-
-:global {
-  .CanvasComponent.LCS .CanvasZone {
-  
-    max-width: 100% !important;
-    
-    }
-    
-    #workbenchPageContent {
-    
-    max-width: 100% !important;
-    
-    }
-    
-   }
-
    .imageUploadContainer{
     display: flex;
     flex-direction: column;
@@ -168,5 +145,6 @@
     height: 150px;
     display: flex;
     margin: auto;
-    width: 100%;
+    width: auto;
+    object-fit: cover;
   }

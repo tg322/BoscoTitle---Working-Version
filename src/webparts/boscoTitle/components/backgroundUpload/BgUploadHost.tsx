@@ -6,7 +6,7 @@ import {
 import { Icon, Spinner } from "office-ui-fabric-react";
 import styles from './BgUpload.module.scss';
 import Modal from './Modal';
-import { spfi, SPFx as spSPFx } from "@pnp/sp";
+import { SPFx as spSPFx } from "@pnp/sp";
 // import { graphfi, SPFx as graphSPFx} from "@pnp/graph";
 
 import "@pnp/sp/files";
@@ -14,6 +14,7 @@ import "@pnp/sp/folders";
 import "@pnp/sp/webs";
 import "@pnp/sp/lists";
 import { IFileAddResult } from "@pnp/sp/files";
+import { Web } from "@pnp/sp/webs";
 
 
 
@@ -22,7 +23,7 @@ export default class PropertyFieldBgUploadHost extends React.Component<
   IBgUploadPropertyPanePropsHostState
 > {
 
-  private sp: any;
+  private rootWeb: any;
 
   constructor(props: IBgUploadPropertyPanePropsHost) {
     super(props);
@@ -40,8 +41,9 @@ export default class PropertyFieldBgUploadHost extends React.Component<
       
     };
 
-    this.sp = spfi().using(spSPFx(this.props.context));
-  
+    
+
+      this.rootWeb = Web(window.location.origin).using(spSPFx(this.props.context));
 
   }
   
@@ -62,7 +64,7 @@ export default class PropertyFieldBgUploadHost extends React.Component<
 
         // let sp = spfi().using(spSPFx(this.context));
 
-        await this.sp.web.getFolderByServerRelativePath(this.props.libraryName).files.getByUrl(this.state.value.fileName).delete();
+        await this.rootWeb.getFolderByServerRelativePath(this.props.libraryName).files.getByUrl(this.state.value.fileName).delete();
 
 
       }
@@ -81,13 +83,13 @@ handleFileUpload = async (file: File) => {
   let result: IFileAddResult;
   const fileType = file.name.slice(file.name.indexOf('.'));
   try{
-    result = await this.sp.web.getFolderByServerRelativePath(this.props.libraryName).files.addUsingPath(this.props.fileName+fileType, file, { Overwrite: true });
+    result = await this.rootWeb.getFolderByServerRelativePath(this.props.libraryName).files.addUsingPath(this.props.fileName+fileType, file, { Overwrite: true });
 
     let fileObject: { [keys: string]: any; } = {};
 
     fileObject.fileName = this.props.fileName+fileType;
   
-    fileObject.blob = this.props.context.pageContext.web.absoluteUrl + encodeURI(result.data.ServerRelativeUrl) + `?UUID=${new Date().getTime() + Math.floor(Math.random() * 1000000000)}`;
+    fileObject.blob = window.location.origin + '/' + encodeURI(result.data.ServerRelativeUrl) + `?UUID=${new Date().getTime() + Math.floor(Math.random() * 1000000000)}`;
   
     fileObject.label = this.props.label;
 
@@ -132,7 +134,7 @@ handleFileRemove = async (fileName:any) => {
     //Begin the async remove function
     try {
       //Run await the deleteFileFromSP function
-      await this.sp.web.getFolderByServerRelativePath(this.props.libraryName).files.getByUrl(fileName).delete();
+      await this.rootWeb.getFolderByServerRelativePath(this.props.libraryName).files.getByUrl(fileName).delete();
     } catch (error) {
       console.error('Error deleting file:', error);
     }

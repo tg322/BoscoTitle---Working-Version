@@ -10,8 +10,11 @@ import * as strings from 'BoscoTitleWebPartStrings';
 import BoscoTitle from './components/BoscoTitle';
 import { IBoscoTitleProps } from './components/IBoscoTitleProps';
 import { PropertyFieldBgUpload } from './components/backgroundUpload/BgUploadPropertyPane';
-import { spfi, SPFx as spSPFx } from "@pnp/sp";
+import { SPFx as spSPFx } from "@pnp/sp";
 import '@pnp/sp/folders';
+import "@pnp/sp/sites";
+import "@pnp/sp/webs";
+import { Web } from '@pnp/sp/webs';
 import { folderFromServerRelativePath } from '@pnp/sp/folders';
 
 export interface IBoscoTitleWebPartProps {
@@ -40,9 +43,7 @@ export default class BoscoTitleWebPart extends BaseClientSideWebPart<IBoscoTitle
       image2FileName: 'image2'
   };
 
-
-  // private pageTitle: string = '';
-  private sp: any;
+  private rootweb: any;
 
   public render(): void {
     const element: React.ReactElement<IBoscoTitleProps> = React.createElement(
@@ -66,15 +67,42 @@ export default class BoscoTitleWebPart extends BaseClientSideWebPart<IBoscoTitle
 
   protected async onInit(): Promise<void> {
 
-    this.sp = spfi().using(spSPFx(this.context));
+    try{
 
-    const folder = await folderFromServerRelativePath(this.sp.web, 'Shared Documents/Bosco Title/'+this.context.pageContext.site.id).select('Exists')();
+      this.rootweb = Web(window.location.origin).using(spSPFx(this.context));
 
-    if(!folder.Exists){
-      await this.sp.web.folders.addUsingPath('Shared Documents/Bosco Title/'+this.context.pageContext.site.id);
-      // const files = await this.sp.web.getFolderByServerRelativePath('Shared Documents/Bosco Title/'+this.context.pageContext.site.id).files();
-      // console.log(files);
+    }catch(error){
+      console.log('Error accessing rootWeb: ' + error);
     }
+    
+    try{
+      const mainFolder = await folderFromServerRelativePath(this.rootweb, 'Shared Documents/'+this.context.manifest.alias).select('Exists')();
+      if(!mainFolder.Exists){
+        try{
+          await this.rootweb.folders.addUsingPath('Shared Documents/'+this.context.manifest.alias);
+        }catch(error){
+          console.log('onInit creating main folder error: ' + error);
+        }
+       
+      }
+    }catch(error){
+      console.log('onInit checking existance of main folder error: ' + error);
+    }
+    
+    try{
+      const siteFolder = await folderFromServerRelativePath(this.rootweb, 'Shared Documents/'+this.context.manifest.alias+'/'+this.context.pageContext.site.id).select('Exists')();
+
+      if(!siteFolder.Exists){
+        try{
+          await this.rootweb.folders.addUsingPath('Shared Documents/'+this.context.manifest.alias+'/'+this.context.pageContext.site.id);
+        }catch(error){
+          console.log('onInit creating site folder error: ' + error);
+        }
+      }
+    }catch(error){
+      console.log('onInit checking existance of site folder error: ' + error);
+    }
+    
 
 
     return this._getEnvironmentMessage().then(message => {
@@ -154,7 +182,7 @@ export default class BoscoTitleWebPart extends BaseClientSideWebPart<IBoscoTitle
                   value: this.properties.image1,
                   context: this.context,
                   fileName: this.fileNames.image1FileName,
-                  libraryName: 'Shared Documents/Bosco Title/'+this.context.pageContext.site.id
+                  libraryName: 'Shared Documents/'+this.context.manifest.alias+'/'+this.context.pageContext.site.id
                 }),
                 PropertyPaneDropdown('image1Position', {
                  label: "Image position",

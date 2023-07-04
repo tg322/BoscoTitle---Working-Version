@@ -9,11 +9,11 @@ function BoscoTitle(props: IBoscoTitleProps){
     image1Position
   } = props;
   return(
-    <section className={`${styles.test}`}>
+    <section className={`${styles.titleBody}`}>
         
         <div id={image1 && image1.label ? image1.label : ''} style={{backgroundImage: `url(${image1 && image1.blob ? image1.blob : ''})`, backgroundSize:'cover', backgroundPosition:image1Position}}>
 
-          <div>
+          <div className={`${styles.quickLinksContainer}`}>
             <div></div>
             <div></div>
             <div></div>
