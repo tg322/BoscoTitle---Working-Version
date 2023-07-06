@@ -8,14 +8,17 @@ import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
 import { IReadonlyTheme } from '@microsoft/sp-component-base';
 import * as strings from 'BoscoTitleWebPartStrings';
 import BoscoTitle from './components/BoscoTitle';
+
 import { IBoscoTitleProps } from './components/IBoscoTitleProps';
 import { PropertyFieldBgUpload } from './components/backgroundUpload/BgUploadPropertyPane';
+import { PropertyFieldIcon } from './components/Icon/IconPropertyPane';
 import { SPFx as spSPFx } from "@pnp/sp";
 import '@pnp/sp/folders';
 import "@pnp/sp/sites";
 import "@pnp/sp/webs";
 import { Web } from '@pnp/sp/webs';
 import { folderFromServerRelativePath } from '@pnp/sp/folders';
+
 
 export interface IBoscoTitleWebPartProps {
   description: string;
@@ -24,6 +27,7 @@ export interface IBoscoTitleWebPartProps {
   image2: any;
   image2Position: string;
   context: any;
+  icon: any;
 }
 
 interface IFileNames {
@@ -49,6 +53,7 @@ export default class BoscoTitleWebPart extends BaseClientSideWebPart<IBoscoTitle
     const element: React.ReactElement<IBoscoTitleProps> = React.createElement(
       BoscoTitle,
       {
+        icon: this.properties.icon,
         context: this.context,
         image2Position: this.properties.image2Position,
         image2: this.properties.image2,
@@ -195,6 +200,11 @@ export default class BoscoTitleWebPart extends BaseClientSideWebPart<IBoscoTitle
                 ],
                 selectedKey: this.properties.image1Position
                   
+                }),
+                PropertyFieldIcon("icon", {
+                  key: "icon",
+                  label: "icon",
+                  value: this.properties.icon
                 })
                 
                 // PropertyFieldBgUpload("image2", {

@@ -4,6 +4,7 @@ export interface IBoscoTitleProps {
   image2: any;
   image1Position: string;
   image1: any;
+  icon: any;
   description: string;
   isDarkTheme: boolean;
   environmentMessage: string;
