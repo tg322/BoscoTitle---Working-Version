@@ -7,8 +7,6 @@ import { Icon, Spinner } from "office-ui-fabric-react";
 import styles from './BgUpload.module.scss';
 import Modal from './Modal';
 import { SPFx as spSPFx } from "@pnp/sp";
-// import { graphfi, SPFx as graphSPFx} from "@pnp/graph";
-
 import "@pnp/sp/files";
 import "@pnp/sp/folders";
 import "@pnp/sp/webs";

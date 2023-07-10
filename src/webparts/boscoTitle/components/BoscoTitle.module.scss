@@ -11,6 +11,7 @@
     .quickLinksContainer{
       display:flex;
       flex-direction: row;
+      margin-bottom: 30px;
     }
   }
 }
@@ -28,5 +29,29 @@
     
     }
     
+   }
+
+   //React Fragments
+
+   .quickLinkMainContainer{
+    display: flex;
+    flex-direction: row;
+    text-decoration: none;
+    background-color: azure;
+    width: 100%;
+    color: #323130;
+    .quickLinkIconContainer{
+      display:flex;
+      padding: 10px;
+      background-color: rebeccapurple;
+      .quickLinkIcon{
+        height: auto;
+        width: 50px;
+      }
+    }
+    .quickLinkTitleContainer{
+      display:flex;
+      padding: 10px;
+    }
    }
 

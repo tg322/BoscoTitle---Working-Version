@@ -10,7 +10,10 @@ import "@pnp/sp/folders";
 import "@pnp/sp/webs";
 import "@pnp/sp/lists";
 import { Panel } from "office-ui-fabric-react";
+import { EditIcon } from '@fluentui/react-icons-mdl2';
 import { PanelType } from '@fluentui/react/lib/Panel';
+import styles from './Icon.module.scss';
+import * as ReactIcons from '@fluentui/react-icons-mdl2';
 
 
 
@@ -24,11 +27,20 @@ export default class PropertyFieldIconHost extends React.Component<
     super(props);
     this.state = {
       value: this.props.value,
-      isOpen: false
-
-      
+      isOpen: false,
+      iconColor: this.props.iconColor,
+      iconBackgroundColor: this.props.iconBackgroundColor
     };
 
+    this.selectedIcon = this.selectedIcon.bind(this);
+    
+  }
+  componentDidUpdate(prevProps: Readonly<IIconPropertyPanePropsHost>, prevState: Readonly<IIconPropertyPanePropsHostState>, snapshot?: any): void {
+      if(prevProps.value != this.props.value){
+        this.setState({value: this.props.value}, () => {
+          this.props.onChanged(this.state.value);
+      }); 
+      }
   }
 
   openPanel = () => {
@@ -39,20 +51,34 @@ export default class PropertyFieldIconHost extends React.Component<
     this.setState({ isOpen: false });
   }
 
-  // handleIconSelectToggle = () => {
-  //   this.setState(prevState => ({ iconSelectVisible: !prevState.iconSelectVisible }));
-  // }
+  selectedIcon(iconName:any) {
+    this.setState({value: iconName}, () => {
+      this.props.onChanged(this.state.value);
+      this.setState({ isOpen: false });
+  }); 
+  }
 
-  
-  
+
   public render(): React.ReactElement<IIconPropertyPanePropsHost> {
+    const IconComponent = (ReactIcons as any)[this.state.value];
     
     return (
     <>
-      <div>
-        <button onClick={this.openPanel}></button>
+      <div className={`${styles.selectedIconContainer}`}>
+        <div className={`${styles.selectedIconSquare}`} style={{backgroundColor: this.props.iconBackgroundColor }}>
+          <IconComponent className={`${styles.selectedIcon}`} style={{color: this.props.iconColor }}/>
+        </div>
+        
       </div>
-      
+      <div className={`${styles.selectIconContainer}`} onClick={this.openPanel}>
+        
+        <div className={`${styles.pencilIcon}`}>
+          <EditIcon/>
+        </div>
+        <div className={`${styles.selectIconText}`}>
+          <p>Select Icon</p>
+        </div>
+      </div>
       
       <div>
       <Panel
@@ -60,9 +86,9 @@ export default class PropertyFieldIconHost extends React.Component<
         onDismiss={this.dismissPanel}
         type={PanelType.extraLarge}
         closeButtonAriaLabel="Close"
-        headerText="Sample panel"
+        headerText="Select Icon"
       >
-        <IconSelectScreen />
+        <IconSelectScreen onClick={this.selectedIcon} />
         
       </Panel>
     </div>

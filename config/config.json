@@ -13,6 +13,7 @@
   },
   "externals": {},
   "localizedResources": {
-    "BoscoTitleWebPartStrings": "lib/webparts/boscoTitle/loc/{locale}.js"
+    "BoscoTitleWebPartStrings": "lib/webparts/boscoTitle/loc/{locale}.js",
+    "PropertyControlStrings": "node_modules/@pnp/spfx-property-controls/lib/loc/{locale}.js"
   }
 }

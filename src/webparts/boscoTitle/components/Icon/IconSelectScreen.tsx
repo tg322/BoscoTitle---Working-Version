@@ -1,6 +1,5 @@
 import * as React from 'react';
 import * as ReactIcons from '@fluentui/react-icons-mdl2';
-import { PrimaryButton } from '@fluentui/react/lib/Button';
 import { mergeStyleSets } from '@fluentui/react/lib/Styling';
 import { initializeIcons } from '@fluentui/font-icons-mdl2';
 import styles from './Icon.module.scss';
@@ -8,17 +7,22 @@ initializeIcons();
 
 function IconSelectScreen (props:any){
 
-  
+  const [isShown, setIsShown] = React.useState(null);
+
+  function handleSelect(iconName:any) {
+    props.onClick(iconName);            
+  }
 
   const classes = mergeStyleSets({
     cell: {
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
-      margin: '80px',
+      margin: '30px',
       float: 'left',
-      height: '30px',
-      width: '30px',
+      height: '80px',
+      width: '80px',
+      cursor: 'pointer',
     },
     icon: {
       fontSize: '30px',
@@ -39,69 +43,34 @@ function IconSelectScreen (props:any){
     if ((ReactIcons as any)[exportName]?.displayName) {
       acc.push((ReactIcons as any)[exportName] as React.FunctionComponent);
     }
-  
     return acc;
   }, []);
 
-  const numOfIcons = icons.length;
-const numOfPages = parseInt((numOfIcons / 100).toString(), 10) + (numOfIcons % 100 > 0 ? 1 : 0);
-
-const [page, setPage] = React.useState(1);
-  const nextPage = () => setPage(page + 1);
-  const prevPage = () => setPage(page - 1);
-
   return(
     
-      <div className={`${styles.modalContainer}`}>
-      <div className={`${styles.buttonContainer}`}>
-      <div className={`${styles.iconPageButtonContainer}`}>
-        <PrimaryButton
-          // eslint-disable-next-line react/jsx-no-bind
-          onClick={prevPage}
-          disabled={page === 1}
-        >
-          Prev
-        </PrimaryButton>
-        <span className={classes.navigationText}>
-          Page {page} of {numOfPages}
-        </span>
-        <PrimaryButton
-          // eslint-disable-next-line react/jsx-no-bind
-          onClick={nextPage}
-          disabled={page === numOfPages}
-        >
-          Next
-        </PrimaryButton>
-        </div>
-        <div className={`${styles.iconCloseButtonContainer}`}>
-          <PrimaryButton
-          // eslint-disable-next-line react/jsx-no-bind
-          onClick={props.onClose}
-          
-        >
-          Close
-        </PrimaryButton>
-        </div>
-        
-      </div>
+  <div className={`${styles.modalContainer}`}>
     <div className={`${styles.iconContainer}`}>
       <div>
         {icons
-          .slice((page - 1) * 100, (page - 1) * 100 + 100)
           .map((Icon: React.FunctionComponent<ReactIcons.ISvgIconProps>) => (
-            <div key={Icon.displayName} className={classes.cell}>
+            <div key={Icon.displayName} className={classes.cell} onMouseEnter={() => setIsShown(Icon.displayName)}
+            onMouseLeave={() => setIsShown(null)} onClick={() => handleSelect(Icon.displayName)}>
               {/*
                 Provide an `aria-label` for screen reader users if the icon is not accompanied by
                 text that conveys the same meaning.
               */}
-              <Icon aria-label={Icon.displayName?.replace('Icon', '')} className={classes.icon} />
+              <Icon aria-label={Icon.displayName?.replace('Icon', '')} className={classes.icon}  />
               <br />
-              {/* <code className={classes.code}>{Icon.displayName}</code> */}
+              {isShown === Icon.displayName && (
+              <code className={classes.code}>{Icon.displayName}</code>
+              )}
             </div>
           ))}
       </div>
     </div>
-    </div>
+  </div>
+
   );
 }
+
 export default IconSelectScreen
