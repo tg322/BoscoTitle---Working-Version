@@ -10,13 +10,12 @@ function QuickLinkContainer(props: any){
     // main backround for modal
     <a className={`${styles.quickLinkMainContainer}`} key={props.Title} href={props.Url} target={`${props.NewTab && props.NewTab ? '_blank' : '_self'}`}>
         {/* modal box */}
-        <div className={`${styles.quickLinkIconContainer}`}>
-          <IconComponent className={`${styles.quickLinkIcon}`}/>
+        <div className={`${styles.quickLinkIconContainer}`} style={{backgroundColor: props.IconBackgroundColor}}>
+          <IconComponent className={`${styles.quickLinkIcon}`} style={{color: props.IconColor, alignSelf: 'center'}}/>
         </div>
         <div className={`${styles.quickLinkTitleContainer}`}>
             <p>{props.Title}</p>
         </div>
-        
     </a>
   );
 }

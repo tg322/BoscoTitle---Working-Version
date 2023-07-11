@@ -29,6 +29,8 @@ export interface IBoscoTitleProps {
   quickLink4Url: string;
   quickLink4NewTab: boolean;
   pageTitle: string;
+  pageTitleColor: any;
+  pageParagraph: string;
 
   description: string;
   isDarkTheme: boolean;

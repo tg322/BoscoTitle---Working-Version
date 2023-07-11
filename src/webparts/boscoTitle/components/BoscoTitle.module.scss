@@ -3,15 +3,44 @@
 .titleBody {
  display: flex;
  flex-direction: column;
+ background-color: black;
   .backgroundImageContainer{
-    height:80vh;
+    height:76vh;
     display: flex;
-    align-items: end;
+    flex-direction: column;
     justify-content: space-evenly;
+    padding: 30px;
+    .backgroundOverlay{
+      height: 100%;
+      width: 100%;
+      top: 0;
+      left: 0;
+      position: absolute;
+      background-color: black;
+      opacity: 0.3;
+    }
+    .titleContainer{
+      margin-top: auto;
+      display: flex;
+      z-index: 999;
+      flex-direction: column;
+      margin-left: 6rem;
+      h1{
+        font-size: 4rem;
+        margin-bottom: 20px;
+      }
+      h3{
+        max-width: 700px;
+      }
+    }
     .quickLinksContainer{
       display:flex;
       flex-direction: row;
       margin-bottom: 30px;
+      margin-top: auto;
+      justify-content: center;
+      z-index: 999;
+      
     }
   }
 }
@@ -37,13 +66,15 @@
     display: flex;
     flex-direction: row;
     text-decoration: none;
-    background-color: azure;
-    width: 100%;
+    background-color: rgb(243, 243, 243);
+    width: 270px;
+    max-width: 270px;
     color: #323130;
+    margin-right: 15px;
     .quickLinkIconContainer{
       display:flex;
       padding: 10px;
-      background-color: rebeccapurple;
+      background-color: "[theme: themePrimary, default: #0078d7]";
       .quickLinkIcon{
         height: auto;
         width: 50px;
@@ -52,6 +83,12 @@
     .quickLinkTitleContainer{
       display:flex;
       padding: 10px;
+      p{
+        font-weight: 600;
+      }
     }
+   }
+   .quickLinkMainContainer:last-of-type{
+    margin-right: 0px;
    }
 

@@ -10,19 +10,30 @@ function BoscoTitle(props: IBoscoTitleProps){
   const {
     image1,
     image1Position,
+    pageTitle,
+    pageTitleColor,
+    pageParagraph,
     quickLink1Icon,
+    quickLink1IconColor,
+    quickLink1IconContainerColor,
     quickLink1Title,
     quickLink1Url,
     quickLink1NewTab,
     quickLink2Icon,
+    quickLink2IconColor,
+    quickLink2IconContainerColor,
     quickLink2Title,
     quickLink2Url,
     quickLink2NewTab,
     quickLink3Icon,
+    quickLink3IconColor,
+    quickLink3IconContainerColor,
     quickLink3Title,
     quickLink3Url,
     quickLink3NewTab,
     quickLink4Icon,
+    quickLink4IconColor,
+    quickLink4IconContainerColor,
     quickLink4Title,
     quickLink4Url,
     quickLink4NewTab
@@ -36,7 +47,9 @@ function BoscoTitle(props: IBoscoTitleProps){
       Icon: quickLink1Icon,
       Title: quickLink1Title,
       Url: quickLink1Url,
-      NewTab: quickLink1NewTab
+      NewTab: quickLink1NewTab,
+      IconColor: quickLink1IconColor,
+      IconBackgroundColor: quickLink1IconContainerColor
     }
   }
   if(quickLink2Title){
@@ -44,7 +57,9 @@ function BoscoTitle(props: IBoscoTitleProps){
       Icon: quickLink2Icon,
       Title: quickLink2Title,
       Url: quickLink2Url,
-      NewTab: quickLink2NewTab
+      NewTab: quickLink2NewTab,
+      IconColor: quickLink2IconColor,
+      IconBackgroundColor: quickLink2IconContainerColor
     }
   }
   if(quickLink3Title){
@@ -52,7 +67,9 @@ function BoscoTitle(props: IBoscoTitleProps){
       Icon: quickLink3Icon,
       Title: quickLink3Title,
       Url: quickLink3Url,
-      NewTab: quickLink3NewTab
+      NewTab: quickLink3NewTab,
+      IconColor: quickLink3IconColor,
+      IconBackgroundColor: quickLink3IconContainerColor
     }
   }
   if(quickLink4Title){
@@ -60,36 +77,35 @@ function BoscoTitle(props: IBoscoTitleProps){
       Icon: quickLink4Icon,
       Title: quickLink4Title,
       Url: quickLink4Url,
-      NewTab: quickLink4NewTab
+      NewTab: quickLink4NewTab,
+      IconColor: quickLink4IconColor,
+      IconBackgroundColor: quickLink4IconContainerColor
     }
   }
 
-  console.log(quickLinks);
+  // console.log(quickLinks);
 
   return(
     <section className={`${styles.titleBody}`}>
-        
-        <div className={`${styles.backgroundImageContainer}`} id={image1 && image1.label ? image1.label : ''} style={{backgroundImage: `url(${image1 && image1.blob ? image1.blob : ''})`, backgroundSize:'cover', backgroundPosition:image1Position}}>
-          
+      <div className={`${styles.backgroundImageContainer}`} id={image1 && image1.label ? image1.label : ''} style={{backgroundImage: `url(${image1 && image1.blob ? image1.blob : ''})`, backgroundSize:'cover', backgroundPosition:image1Position}}>
+        <div className={`${styles.backgroundOverlay}`}></div>
+          <div className={`${styles.titleContainer}`}>
+            <h1 style={{color: pageTitleColor}}>{pageTitle}</h1>
+            <h2 style={{color: pageTitleColor}}>{pageParagraph}</h2>
+          </div>
           <div className={`${styles.quickLinksContainer}`}>
-            {/* <div><p><IconComponent style={{color: 'Blue'}}/>{quickLink1Title}</p> <p>{quickLink1Url}</p><p>{quickLink1NewTab}</p></div> */}
             {Object.keys(quickLinks).map((key) => {
               const quickLink = quickLinks[key];
               return (
 
-                <QuickLinkContainer key={quickLink.Title} Title={quickLink.Title} Url={quickLink.Url} NewTab={quickLink.NewTab} Icon={quickLink.Icon}/>
+                <QuickLinkContainer key={quickLink.Title} Title={quickLink.Title} Url={quickLink.Url} NewTab={quickLink.NewTab} Icon={quickLink.Icon} IconColor={quickLink.IconColor} IconBackgroundColor={quickLink.IconBackgroundColor}/>
                 
               );
             })}
           </div>
-
-        </div>
-
-        {/* <div id={image2 && image2.label ? image2.label : ''} style={{backgroundImage: `url(${image2 && image2.blob ? image2.blob : ''})`, backgroundSize:'cover', backgroundPosition:image2Position}}>
-          
-        </div> */}
         
-      </section>
+      </div>
+    </section>
   );
 }
 

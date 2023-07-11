@@ -8,6 +8,7 @@ import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
 import { IReadonlyTheme } from '@microsoft/sp-component-base';
 import * as strings from 'BoscoTitleWebPartStrings';
 import BoscoTitle from './components/BoscoTitle';
+import PnPTelemetry from "@pnp/telemetry-js";
 import { PropertyFieldColorPicker, PropertyFieldColorPickerStyle } from '@pnp/spfx-property-controls/lib/PropertyFieldColorPicker'
 import { IBoscoTitleProps } from './components/IBoscoTitleProps';
 import { PropertyFieldBgUpload } from './components/backgroundUpload/BgUploadPropertyPane';
@@ -52,6 +53,8 @@ export interface IBoscoTitleWebPartProps {
   quickLink4Url: string;
   quickLink4NewTab: boolean;
   pageTitle: string;
+  pageTitleColor: any;
+  pageParagraph: string;
 }
 
 interface IFileNames {
@@ -76,6 +79,8 @@ export default class BoscoTitleWebPart extends BaseClientSideWebPart<IBoscoTitle
     const element: React.ReactElement<IBoscoTitleProps> = React.createElement(
       BoscoTitle,
       {
+        pageParagraph: this.properties.pageParagraph,
+        pageTitleColor: this.properties.pageTitleColor,
         pageTitle: this.properties.pageTitle,
         quickLink4NewTab: this.properties.quickLink4NewTab,
         quickLink4Url: this.properties.quickLink4Url,
@@ -118,6 +123,9 @@ export default class BoscoTitleWebPart extends BaseClientSideWebPart<IBoscoTitle
   }
 
   protected async onInit(): Promise<void> {
+
+    const telemetry = PnPTelemetry.getInstance();
+    telemetry.optOut();
 
     if(!this.properties.quickLink1Icon){
       this.properties.quickLink1Icon = 'GlobeIcon'
@@ -207,21 +215,29 @@ export default class BoscoTitleWebPart extends BaseClientSideWebPart<IBoscoTitle
       this.properties.quickLink1NewTab = null;
       this.properties.quickLink1Title = '';
       this.properties.quickLink1Url = '';
+      this.properties.quickLink1IconColor = '#323130';
+      this.properties.quickLink1IconContainerColor= '#d3d3d3';
     }else if(quickLink === 'QuickLink2'){
       this.properties.quickLink2Icon = 'GlobeIcon';
       this.properties.quickLink2NewTab = null;
       this.properties.quickLink2Title = '';
       this.properties.quickLink2Url = '';
+      this.properties.quickLink2IconColor = '#323130';
+      this.properties.quickLink2IconContainerColor= '#d3d3d3';
     }else if(quickLink === 'QuickLink3'){
       this.properties.quickLink3Icon = 'GlobeIcon';
       this.properties.quickLink3NewTab = null;
       this.properties.quickLink3Title = '';
       this.properties.quickLink3Url = '';
+      this.properties.quickLink3IconColor = '#323130';
+      this.properties.quickLink3IconContainerColor= '#d3d3d3';
     }else if(quickLink === 'QuickLink4'){
       this.properties.quickLink4Icon = 'GlobeIcon';
       this.properties.quickLink4NewTab = null;
       this.properties.quickLink4Title = '';
       this.properties.quickLink4Url = '';
+      this.properties.quickLink4IconColor = '#323130';
+      this.properties.quickLink4IconContainerColor= '#d3d3d3';
     }
   }
 
@@ -254,8 +270,8 @@ export default class BoscoTitleWebPart extends BaseClientSideWebPart<IBoscoTitle
  
 
   protected getPropertyPaneConfiguration(): IPropertyPaneConfiguration {
-    
     const backgroundImage = {
+      
       groupName: 'Background Image',
       isCollapsed: true,
               groupFields: [
@@ -277,7 +293,6 @@ export default class BoscoTitleWebPart extends BaseClientSideWebPart<IBoscoTitle
          { key: 'bottom', text: 'Bottom'}
        ],
        selectedKey: this.properties.image1Position
-         
        })
     ]
     }
@@ -285,28 +300,48 @@ export default class BoscoTitleWebPart extends BaseClientSideWebPart<IBoscoTitle
       pages: [
         {
           displayGroupsAsAccordion: true,
-          
           header: {
             description: 'Add Page Background, Title and Quick Links'
           },
-          
           groups: [
-            
             backgroundImage,
-
             {
-              
               groupName: 'Page Title',
               isCollapsed: true,
               groupFields: [
                 PropertyPaneTextField('pageTitle', {
                   label: 'Enter Page Title',
                   value: this.properties.pageTitle
+                }),
+                PropertyPaneTextField('pageParagraph', {
+                  label: 'Add a Page Paragraph',
+                  multiline: true,
+                  value: this.properties.pageParagraph
+                }),
+                PropertyFieldColorPicker('pageTitleColor', {
+                  label: 'Title & Paragraph Colour',
+                  selectedColor: this.properties.pageTitleColor,
+                  onPropertyChange: this.onPropertyPaneFieldChanged,
+                  properties: this.properties,
+                  disabled: false,
+                  debounce: 1000,
+                  isHidden: false,
+                  alphaSliderHidden: false,
+                  style: PropertyFieldColorPickerStyle.Inline,
+                  iconName: 'Precipitation',
+                  key: 'pageTitleColor'
                 })
               ]
-            },
+            }
+          ]
+        },
+        {
+          displayGroupsAsAccordion: true,
+          header: {
+            description: 'Add Quick Links'
+          },
+          groups: [
             {
-              
               groupName: 'Quick Link 1',
               isCollapsed: true,
               groupFields: [
